@@ -17,9 +17,6 @@
 
 
     <link href="./dist/css/custom.css" rel="stylesheet">
-
-  
-
   </head>
 
   <body  ng-controller="dkaController">
@@ -60,13 +57,13 @@
 						  <!-- <canvas id="doughnut" class="chart chart-doughnut"
 						    chart-data="rooms.data" chart-labels="rooms.labels" chart-colors="rooms.colors">
 						  </canvas> -->
-						  <canvas id="radar" class="chart chart-radar"
+						 <!-- <canvas id="radar" class="chart chart-radar"
 						    chart-data="room.data" chart-options="rooms.optionsRd" chart-labels="rooms.labels">
-						  </canvas>
-						  <canvas id="bar" class="chart chart-bar"
+						  </canvas> -->
+						  <!-- <canvas id="bar" class="chart chart-bar" chart-colors="rooms.colors"
 						    chart-data="room.data" chart-options="rooms.bar" chart-labels="rooms.labels">
 						  </canvas>
-						  
+						   -->
 						 	 <div ng-repeat="(ix, i) in rooms.labels" >
 								<b>{{i}}:</b> <b ng-style="{color: colors[0]}" ng-if="!invalid" >valid</b>( {{room.data[ix]}} )<b ng-if="invalid" style="color: rgba(255,0,0,1)" >Invalid</b>
 							</div> 
