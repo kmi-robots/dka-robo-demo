@@ -1,0 +1,20 @@
+{
+  "nodes": [
+    {"id": "Room 20", "group": 1},
+    {"id": "Room 22", "group": 1},
+    {"id": "Podium", "group": 1},
+    {"id": "MarkBucks", "group": 1},
+    {"id": "Activity 2", "group": 2},
+    {"id": "Activity 3", "group": 2},
+    {"id": "Activity 4", "group": 2},
+    {"id": "Activity 5", "group": 2}
+  ],
+  "links": [
+    {"source": "Room 20", "target": "Room 22", "value": 1},
+    {"source": "Room 22", "target": "Podium", "value": 1},
+    {"source": "Podium", "target": "MarkBucks", "value": 1},
+    {"source": "Activity 2", "target": "Activity 3", "value": 1},
+    {"source": "Activity 3", "target": "Activity 4", "value": 1},
+    {"source": "Activity 4", "target": "Activity 5", "value": 1}
+  ]
+}

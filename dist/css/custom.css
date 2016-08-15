@@ -1,0 +1,65 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+
+.btn-custom {
+	color: #F5A9A9;
+	background-color : #9F1F1F;
+	border-color : #9F1F1F;
+}
+
+.navbar-custom {
+	background-color : #9F1F1F;
+}
+
+.navbar-inverse .navbar-brand  {
+	color : #F5A9A9;
+}
+
+.navbar-inverse .navbar-brand:focus  ,
+.navbar-inverse .navbar-brand:hover  {
+	color : #F5A9A9;
+	
+}
+
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+	background-color:#F5A9A9;	
+	border-color:#F5A9A9;	
+}
+
+.fa-android{
+	color:#F5A9A9;
+}
+
+.centered {
+    display: table-cell;
+    vertical-align: middle;
+	margin: 0 auto;
+}
+
+/* d3 */
+
+
+.overlay {
+  position: absolute;
+  background: rgba(100,100,100,0);
+  top:0px;
+  bottom:0px;
+  left:0px;
+  right:0px;
+}
+
+.element {
+  background: none;
+  position: absolute;
+  opacity: 1;
+ /* border: solid 1px grey;*/
+	width: 150px; 
+	height: 100px;
+  
+}
+
+

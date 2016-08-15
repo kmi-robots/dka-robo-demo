@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html ng-app="dkaApp" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./docs/droid-logo-red.png">
+
+    <title>DKA-robo demo</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./dist/css/font-awesome.min.css" rel="stylesheet">
+
+
+    <link href="./dist/css/custom.css" rel="stylesheet">
+
+  
+
+  </head>
+
+  <body  ng-controller="dkaController">
+
+    <nav class="navbar navbar-inverse navbar-fixed-top  navbar-custom">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+           
+          </button>
+          <div class="navbar-brand" > <i class="fa fa-android fa-lg" aria-hidden="true"></i> DKA-robo demo <i class="fa fa-android fa-lg" aria-hidden="true"></i> 
+</div>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="jumbotron">
+			 <h1> </h1>
+	    	 <h2 class="text-center"> KMi Knowledge Base</h2>
+		     <div class="container" style=" height: 100px"></div>
+			 <div class="container">
+					 <h1></h1>
+	
+			  	 	<img src="./docs/kmi_north_wing_complete_transparent.png"/>
+			
+	   
+				   <div ng-repeat="room in rooms.rooms" id={{room.name}}  class="element" 
+				     style="left:{{room.left}};top:{{room.top}};width:225px" >
+				
+				   <div  id="chart" >
+			          <div class="panel panel-default">
+			            	 <div class="panel-heading"><b>{{room.name}}</b></div>
+			           	  <div class="panel-body" >
+
+						  <!-- <canvas id="doughnut" class="chart chart-doughnut"
+						    chart-data="rooms.data" chart-labels="rooms.labels" chart-colors="rooms.colors">
+						  </canvas> -->
+						  <canvas id="radar" class="chart chart-radar"
+						    chart-data="room.data" chart-options="rooms.optionsRd" chart-labels="rooms.labels">
+						  </canvas>
+						  <canvas id="bar" class="chart chart-bar"
+						    chart-data="room.data" chart-options="rooms.bar" chart-labels="rooms.labels">
+						  </canvas>
+						  
+						 	 <div ng-repeat="(ix, i) in rooms.labels" >
+								<b>{{i}}:</b> <b ng-style="{color: colors[0]}" ng-if="!invalid" >valid</b>( {{room.data[ix]}} )<b ng-if="invalid" style="color: rgba(255,0,0,1)" >Invalid</b>
+							</div> 
+			            </div>
+			          </div>
+			        </div>
+				   
+				   </div>
+		  
+			</div> <!-- /container -->
+	     	<div class="container" style=" height: 100px">
+	     		
+	     	</div>
+		  
+	</div> <!-- end jumbo -->
+	  
+	
+	 
+	
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        
+		
+		<div class="col-md-4">
+          <h2>Query</h2>
+		  
+		  <textarea class="form-control" rows="5">{{ radioModel || 'Insert a SPARQL query'}}</textarea>
+		  <p> </p>
+		  
+		  <div class="btn-group btn-group-justified" role="group" aria-label=""> 
+	          <label class= "btn btn-default" ng-repeat="query in queries"  ng-model="$parent.radioModel" uib-btn-radio="query.value">{{query.name}}</label>
+		  </div>
+      
+		  <h2></h2>
+	      <button type="button" ng-click="queryServer()" class="btn btn-lg btn-group-justified btn-custom">
+	          EXECUTE
+	      </button>
+	  	  
+        </div>
+       
+	   
+	    <div class="col-md-4">
+          <h2>Results</h2>
+        
+		  <div ng-model="resultsTable" ng-show="results"> 
+			  <table class="table">  
+				 <tbody> 
+					 <tr ng-class="{success : terminated , danger : !terminated}"> 
+						 <th scope="row">1</th> <td>Invalid</td> <td>Invalid</td> 
+					 </tr> 
+					 <tr class=""  > 
+						 <th scope="row">2</th> <td>Valid</td> <td>Valid</td> 
+					 </tr> 
+					 <tr ng-class="{success : terminated , danger : !terminated}"> 
+						 <th scope="row">3</th> <td>Invalid</td> <td>Invalid</td> 
+					 </tr> 
+					 <tr ng-class="{success : terminated , danger : !terminated}"> 
+						 <th scope="row">4</th> <td>Invalid</td> <td>Invalid</td> 
+					 </tr>
+				  </tbody> 
+			  </table> 
+		  </div>
+	 
+		 
+       	 </div>
+	   
+	   
+        <div class="col-md-4">
+          <h2>Plan</h2>
+          <!-- <p>Robo Plan print here...</p> -->
+		  
+		  <div class="list-group">
+			  <li ng-class="{disabled : action.executed, active : action.executing }" class="list-group-item" ng-repeat="action in plan"  > 
+				   <span ng-if="action.executed" class="fa fa-check fa-fw" aria-hidden="true"></span>
+				   <span ng-if="action.executing" class="fa fa-spinner fa-spin fa-fw" aria-hidden="true"></span>
+			   	{{action.name}} 
+			   </li>
+		  </div>
+		  
+        </div>
+      
+	  </div>  <!-- end row -->
+
+
+      <hr></hr>
+      
+	  
+
+      <footer>
+        <p>&copy; Data Science group, Knowledge Media institute, The Open University, 2016</p>
+      </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="./dist/js/bootstrap.min.js"></script>
+ 
+    <script src="./dist/js/angular.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
+	
+ 	<script src="./dist/js/ui-bootstrap-2.0.1.min.js"></script>
+	
+	<script type="text/javascript" src="./dist/js/inspector-gadget.min.js"></script>
+	
+	<script src="./dist/js/moment.min.js"></script>
+	<script src="./dist/js/Chart.min.js"></script>
+	<script src="./dist/js/angular-chart.min.js"></script>
+	
+	
+
+ 
+    <script src="./dist/js/dkaApp.js"></script>
+  </body>
+</html>
