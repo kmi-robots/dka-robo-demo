@@ -64,8 +64,8 @@
 						    chart-data="room.data" chart-options="rooms.bar" chart-labels="rooms.labels">
 						  </canvas>
 						   -->
-						 	 <div ng-repeat="(ix, i) in rooms.labels" >
-								<b>{{i}}:</b> <b ng-style="{color: colors[0]}" ng-if="!invalid" >valid</b>( {{room.data[ix]}} )<b ng-if="invalid" style="color: rgba(255,0,0,1)" >Invalid</b>
+						 	 <div ng-repeat="(i,x) in room.properties" >
+								<b>{{x.name}}:</b> <b ng-style="{color: x.color}" ng-if="x.validity" >valid</b>( {{x.value}} )<b ng-if="!x.validity" style="color: rgba(255,0,0,1)" > Invalid</b>
 							</div> 
 			            </div>
 			          </div>
@@ -165,7 +165,7 @@
     <script src="./dist/js/bootstrap.min.js"></script>
  
     <script src="./dist/js/angular.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
 	
  	<script src="./dist/js/ui-bootstrap-2.0.1.min.js"></script>
 	
