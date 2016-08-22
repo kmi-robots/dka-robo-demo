@@ -64,8 +64,8 @@
 						    chart-data="room.data" chart-options="rooms.bar" chart-labels="rooms.labels">
 						  </canvas>
 						   -->
-						 	 <div ng-repeat="(i,x) in room.properties" >
-								<b>{{x.name}}:</b> <b ng-style="{color: x.color}" ng-if="x.validity" >valid</b>( {{x.value}} )<b ng-if="!x.validity" style="color: rgba(255,0,0,1)" > Invalid</b>
+						 	 <div ng-if="x.validity"  ng-repeat="(i,x) in room.properties" >
+								<b>{{x.name}}:</b> <b ng-style="{color: x.color}" >valid</b><b ng-if="!x.validity" style="color: rgba(255,0,0,1)" > expired</b> ( {{x.value}} )
 							</div> 
 			            </div>
 			          </div>

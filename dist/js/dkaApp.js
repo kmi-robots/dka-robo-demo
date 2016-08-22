@@ -24,7 +24,7 @@ function dkaController($scope,$interval,$sce,$http){
 	// TODO: this should be replaced with a call to the server that
 	// serves this information
 	$scope.propertyvalidity = null;
-	$http.get('propertyValidity2.json')
+	$http.get('propertyValidity.json')
 		.success(function(data) { 
 			$scope.propertyvalidity = data;   	
 		})
@@ -79,15 +79,15 @@ function dkaController($scope,$interval,$sce,$http){
 				}
 				
 				var remainingTime = isValidUntil - now;
-				var percentageElapsedTime = remainingTime/($scope.propertyvalidity[room][property]*1000);
+				var percentageOfRemainingTime = remainingTime/($scope.propertyvalidity[room][property]*1000);
 				
 				// this should never happen. 
 				// only for debugging
-				if(percentageElapsedTime > 1) {
-					percentageElapsedTime = 1;
+				if(percentageOfRemainingTime > 1) {
+					percentageOfRemainingTime = 1;
 				}
 
-				var transparcencyValue = percentageElapsedTime;
+				var transparcencyValue = percentageOfRemainingTime;
 				var curRoom = null;
 				
 				for (index in $scope.rooms.rooms) {
@@ -97,10 +97,12 @@ function dkaController($scope,$interval,$sce,$http){
 						break;
 					}
 				}
+								
 				if(curRoom != null) {
 					if(remainingTime > 0) {
 						curRoom.properties[property].color = 'rgba(0, 180, 48, '+transparcencyValue+')';
 						curRoom.properties[property].value = value;
+						curRoom.properties[property].validity = true;
 					}
 					else {
 						curRoom.properties[property].validity = false;
@@ -116,19 +118,18 @@ function dkaController($scope,$interval,$sce,$http){
 		// Maybe this can be put in another method, that is called more frequently
 		// ASK ROBOT WHERE IT IS: to be used to update the position of the robot
 		// watchout, with Chrome there might be proble with the Access-Control-Allow-Origin
-		// $http({
-		//     method: 'GET',
-		//     url: 'http://10.229.170.105:8080/bot/wru', // url should be loaded from a conf file
-		//     headers: {'Content-Type': 'application/x-www-form-urlencoded',
-		// 		 	 "Access-Control-Allow-Origin": "*"}
-		//     	}).then(function successCallback(response) {
-		//     		 // parse plan response
-		// 			var x = response.data.current_position.x;
-		// 			var y = response.data.current_position.y;
-		// 			console.log("[ROBOT] Robot is @ x:" + x + " y:" + y)
-		//     	}, function errorCallback(response) {
-		//     		alert("[ROBOT] Sorry, the robot is not responding")
-		//     	});
+		$http({
+		    method: 'GET',
+		    url: 'http://10.229.170.105:8080/bot/wru', // url should be loaded from a conf file
+		    headers: {'Content-Type': 'application/x-www-form-urlencoded',
+				 	 "Access-Control-Allow-Origin": "*"}
+		    	}).then(function successCallback(response) {
+		    		 // parse plan response
+					var x = response.data.current_position.x;
+					var y = response.data.current_position.y;
+		    	}, function errorCallback(response) {
+		    		alert("[ROBOT] Sorry, the robot is not responding")
+		    	});
 	}
 	
 	$scope.rooms = {
@@ -190,46 +191,53 @@ function dkaController($scope,$interval,$sce,$http){
 	
 	
 	$scope.queryServer = function(){
-			
+			plan();
 			// PERFORM QUERY QUERY
 			// TODO apparently it does not always take $scope.radioModel
 			// or it doesn't update it when someone writes inside the textarea
 			// $http({
-			//   method: 'GET',
-			//   url: 'http://10.229.170.105:8080/query', // url should be loaded from a conf file
-			//   headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-			//   params: {query: $scope.radioModel}
-			// }).then(function successCallback(response) {
-			//		// parse query response
-			//	    // update the resutl table
-			//      // ask for the plan - plan()
-			//   }, function errorCallback(response) {
-			// 	  $scope.radioModel = "Sorry, problem while sending the reuqest. ERROR " + response.status
-			//   });
+// 			  method: 'GET',
+// 			  url: 'http://10.229.170.105:8080/query', // url should be loaded from a conf file
+// 			  headers: {'Content-Type': 'application/x-www-form-urlencoded','Accept':'application/json'},
+// 			  params: {query: $scope.radioModel}
+// 			}).then(function successCallback(response) {
+// 				console.log(response.data);
+// 				// parse query response
+//
+// 				// update the resutl table
+// 				updateResults(response.data);
+// 				console.log("And then I'll send the plan to the robot");
+// 			  }, function errorCallback(response) {
+// 				  $scope.radioModel = "Sorry, problem while sending the reuqest. ERROR " + response.status
+// 			  });
 		 
 			$scope.results = true;				
 			
+			function updateResults() {
+				
+			}
+			
 			// we can ask if it's busy here
 			
-			plan();
 			// then last query
 			
 			function plan(){
 				
 			  	// GET PLAN
-				//   		$http({
-				//   		  method: 'GET',
-				//   		  url: 'http://10.229.170.105:8080/planner/plan', // url should be loaded from a conf file
-				//   		  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-				//   		  params: {query: $scope.radioModel}
-				//   		}).then(function successCallback(response) {
-				//   		    // parse plan response
-				//				// update and/or 
-				//				// do your stuff here
-				// alert(response.data);
-				//   		  }, function errorCallback(response) {
-				//   			  $scope.radioModel = "Sorry, problem while sending the reuqest. ERROR " + response.status
-				//   		  });
+				$http({
+					method: 'GET',
+				  	url: 'http://10.229.170.105:8080/planner/plan', // url should be loaded from a conf file
+				  	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				  	params: {query: $scope.radioModel}
+				}).then(function successCallback(response) {
+					console.log(response.data);
+				  	// parse plan response
+					// update and/or
+					// do your stuff here
+				alert(response.data);
+				  }, function errorCallback(response) {
+				  			  $scope.radioModel = "Sorry, problem while sending the request. ERROR " + response.status
+				  		  });
 				
 				// this must be called inside the successCallback method of the GET PLAN
 			  	// SEND QUERY FOR PLAN
