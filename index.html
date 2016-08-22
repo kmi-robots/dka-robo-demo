@@ -46,7 +46,7 @@
 			  	 	<img src="./docs/kmi_north_wing_complete_transparent.png"/>
 			
 	   
-				   <div ng-repeat="room in rooms.rooms" id={{room.name}}  class="element" 
+				   <div ng-repeat="room in configfile.rooms" id={{room.name}}  class="element" 
 				     style="left:{{room.left}};top:{{room.top}};width:225px" >
 				
 				   <div  id="chart" >
@@ -91,7 +91,7 @@
 		<div class="col-md-4">
           <h2>Query</h2>
 		  
-		  <textarea class="form-control" rows="5">{{ radioModel || 'Insert a SPARQL query'}}</textarea>
+		  <textarea ng-model="radioModel" class="form-control" rows="5">{{ radioModel || 'Insert a SPARQL query'}}</textarea>
 		  <p> </p>
 		  
 		  <div class="btn-group btn-group-justified" role="group" aria-label=""> 

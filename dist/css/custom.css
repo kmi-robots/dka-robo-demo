@@ -40,6 +40,10 @@ body {
 	margin: 0 auto;
 }
 
+.jumbotron {
+	height:900px;
+}
+
 /* d3 */
 
 
@@ -54,7 +58,7 @@ body {
 
 .element {
   background: none;
-  position: absolute;
+  position: relative;
   opacity: 1;
  /* border: solid 1px grey;*/
 	width: 150px; 
