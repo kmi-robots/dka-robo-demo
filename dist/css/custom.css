@@ -41,7 +41,7 @@ body {
 }
 
 .jumbotron {
-	height:900px;
+	height:800px;
 }
 
 /* d3 */
@@ -58,12 +58,34 @@ body {
 
 .element {
   background: none;
-  position: relative;
+  position: absolute;
   opacity: 1;
- /* border: solid 1px grey;*/
-	width: 150px; 
-	height: 100px;
-  
+  width: 150px; 
+  height: 100px;
+}
+
+.kb_container {
+	position:relative;
+}
+
+.map_container {
+	display:inline-block;
+	position:relative;
+	margin-top:100px;
+}
+
+.robot {
+	position:absolute; 
+}
+
+.map {
+	position:absolute;
+	top:0px; 
+	left:0px;
+}
+
+.querycell {
+	padding: 2px;
 }
 
 

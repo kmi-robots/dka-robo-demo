@@ -29,98 +29,123 @@
 		"Activity2":
 		{
 			"name":"Activity 2", 
-			"left": "-200px", 
-			"top": "-450px",
+			"left": "0px", 
+			"top": "0px",
 			"w": "80px", 
 			"h":"120px",
 			"hasHumidity":300,
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
-			"hasWiFiSignal":340
+			"hasWiFiSignal":340,
+			"validity":false
 		},
 		"Activity3":
 		{
 			"name":"Activity 3", 
-			"left": "50px", 
-			"top": "-550px",
+			"left": "250px", 
+			"top": "0px",
 			"w": "80px", 
 			"h":"120px",
 			"hasHumidity":300,
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
-			"hasWiFiSignal":340
+			"hasWiFiSignal":340,
+			"validity":false
 		},
 		"Activity4":
 		{
 			"name":"Activity 4", 
-			"left": "300px", 
-			"top": "-650px",
+			"left": "500px", 
+			"top": "0px",
 			"w": "80px", 
 			"h":"120px",
 			"hasHumidity":300,
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
-			"hasWiFiSignal":340
+			"hasWiFiSignal":340,
+			"validity":false
 		},
 		"Activity5":
 		{
 			"name":"Activity 5", 
-			"left": "550px", 
-			"top": "-750px",
+			"left": "750px", 
+			"top": "0px",
 			"w": "80px", 
 			"h":"120px",
 			"hasHumidity":300,
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
-			"hasWiFiSignal":340
-		},
-		"Room22":
-		{
-			"name":"Room 22", 
-			"left": "-200px", 
-			"top": "-370px",
-			"w": "58px", 
-			"h":"85px",
-			"hasHumidity":300,
-			"hasTemperature":60,
-			"hasPeopleCount":1800,
-			"hasWiFiSignal":340
+			"hasWiFiSignal":340,
+			"validity":false
 		},
 		"Room20":
 		{
 			"name":"Room 20", 
-			"left": "50px", 
-			"top": "-470px",
+			"left": "0px", 
+			"top": "500px",
 			"w": "126px", 
 			"h":"79px",
 			"hasHumidity":300,
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
-			"hasWiFiSignal":340
+			"hasWiFiSignal":340,
+			"validity":false
+		},
+		"Room22":
+		{
+			"name":"Room 22", 
+			"left": "250px", 
+			"top": "500px",
+			"w": "58px", 
+			"h":"85px",
+			"hasHumidity":300,
+			"hasTemperature":60,
+			"hasPeopleCount":1800,
+			"hasWiFiSignal":340,
+			"validity":false
 		},
 		"Podium":
 		{
 			"name":"Podium", 
-			"left": "300px", 
-			"top": "-570px",
+			"left": "500px", 
+			"top": "500px",
 			"w": "244px", 
 			"h":"274px",
 			"hasHumidity":300,
 			"hasTemperature":180,
 			"hasPeopleCount":1800,
-			"hasWiFiSignal":340
+			"hasWiFiSignal":340,
+			"validity":false
 		},
 		"MarkBucks":
 		{
 			"name":"MarkBucks", 
-			"left": "550px", 
-			"top": "-670px",
+			"left": "750px", 
+			"top": "500px",
 			"w": "101px", 
 			"h":"150px",
 			"hasHumidity":300,
 			"hasTemperature":30,
 			"hasPeopleCount":3600,
-			"hasWiFiSignal":340
+			"hasWiFiSignal":340,
+			"validity":false
 		}
-	}
+	},
+	"wifiname":"_The Cloud",
+	"map":{
+		"filename":"docs/kmi_north_wing_complete_transparent.png",
+		"xoffset":136,
+		"yoffset":325,
+		"scale":0.05,
+		"invertaxes":true,
+		"xmultiplier":-1,
+		"ymultiplier":-1
+	},
+	"robot":{
+		"style":{
+			"width":11,
+			"height":11
+		}
+	},
+	"kbserverip":"http://10.229.170.105:8080/"
 }
