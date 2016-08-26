@@ -94,7 +94,7 @@
 		  <textarea ng-model="radioModel" class="form-control" rows="5">{{ radioModel || 'Insert a SPARQL query'}}</textarea>
 		  <div class="btn-group btn-group-justified" role="group" aria-label=""> 
     		  	<select name="querySelect" id="querySelect" ng-model="$parent.radioModel">
-				<option value="">--- Please select a query ---</option>
+				<option>--- Please select a query ---</option>
       		  		<option ng-repeat="query in queries" ng-value="query.value">{{query.name}}</option>
 		  	</select>
 		  </div>
