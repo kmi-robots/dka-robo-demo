@@ -407,7 +407,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 	}
 	
 	$scope.queryResults = {
-		show:false,
+		show:true,
 		keys:[],
 		results:[],
 	};

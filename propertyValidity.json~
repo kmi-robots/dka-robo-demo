@@ -162,5 +162,5 @@
 	{ 	"name":"Query 4",
 		"value":"select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Room20> ) (<http://data.open.ac.uk/kmi/location/Room22>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
 	}],
-	"updatequery":"SELECT ?room ?validityGraph ?prop ?val where { graph ?validityGraph { ?room ?prop ?val } . graph <http://data.open.ac.uk/kmi/graph/static> {?room a <http://data.open.ac.uk/kmi/robo/Location> } . FILTER (?validityGraph != <http://data.open.ac.uk/kmi/graph/static> ) } ORDER BY ?room"
+	"updatequery":"SELECT ?room ?validityGraph ?prop ?val where { graph ?validityGraph { ?room ?prop ?val } . graph <http://data.open.ac.uk/kmi/graph/static> {?room a <http://data.open.ac.uk/kmi/robo/Location> } . FILTER (?validityGraph != <http://data.open.ac.uk/kmi/graph/static> ) } ORDER BY ?room;"
 }
