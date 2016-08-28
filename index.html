@@ -37,7 +37,6 @@
     </nav>
 
     <div class="jumbotron">
-			 <h1> </h1>
 	    	 <h2 class="text-center"> KMi Knowledge Base</h2>
 		     <!-- <div class="container" style=" height: 100px"></div> -->
 			 <div class="container">
@@ -50,26 +49,24 @@
 				   </div>
 				   <div ng-repeat="room in configfile.rooms" id={{room.name}}  class="element" 
 				     style="left:{{room.left}};top:{{room.top}};width:225px"  ng-hide="isRoomInvalid(room)" > <!-- -->
-				
+					
 				  	 <div  id="chart" >
 				          <div class="panel panel-default">
 				            	 <div class="panel-heading"><b>{{room.name}}</b></div>
-				           	  <div class="panel-body" >
-
-							  <!-- <canvas id="doughnut" class="chart chart-doughnut"
-							    chart-data="rooms.data" chart-labels="rooms.labels" chart-colors="rooms.colors">
-							  </canvas> -->
-							 <!-- <canvas id="radar" class="chart chart-radar"
-							    chart-data="room.data" chart-options="rooms.optionsRd" chart-labels="rooms.labels">
-							  </canvas> -->
-							  <!-- <canvas id="bar" class="chart chart-bar" chart-colors="rooms.colors"
-							    chart-data="room.data" chart-options="rooms.bar" chart-labels="rooms.labels">
-							  </canvas>
-							   -->
-							 	 <div ng-if="x.validity"  ng-repeat="(i,x) in room.properties" >
-									<b>{{x.name}}:</b> <b ng-style="{color: x.color}" >valid</b><b ng-if="!x.validity" style="color: rgba(255,0,0,1)" > expired</b> ( {{x.value}} )
+						    <table class="table table-condensed">
+							<tbody>
+							       <tr ng-if="x.validity" ng-repeat="(i,x) in room.properties">
+								   <td>{{x.name}}</td>
+								   <td>{{x.value}}</td>
+	   						           <td ng-style="{color: x.color}"><b>valid</b><td>
+							       </tr>
+							</tbody>
+						    </table>
+					            <!--<div class="panel-body" >							  
+							<div ng-if="x.validity"  ng-repeat="(i,x) in room.properties" >
+								<b>{{x.name}}:</b> <b ng-style="{color: x.color}" >valid</b><b ng-if="!x.validity" style="color: rgba(255,0,0,1)" > expired</b> ( {{x.value}} )
 								</div> 
-				            </div>
+				            </div>-->
 				          </div>
 				      </div>
 				   </div>
