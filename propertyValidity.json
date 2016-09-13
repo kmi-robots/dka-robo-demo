@@ -31,8 +31,7 @@
 			"name":"Activity 2", 
 			"left": "0px", 
 			"top": "0px",
-			"w": "80px", 
-			"h":"120px",
+			"width": "150px",
 			"hasHumidity":300,
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
@@ -44,8 +43,7 @@
 			"name":"Activity 3", 
 			"left": "250px", 
 			"top": "0px",
-			"w": "80px", 
-			"h":"120px",
+			"width": "150px",
 			"hasHumidity":300,
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
@@ -57,8 +55,7 @@
 			"name":"Activity 4", 
 			"left": "500px", 
 			"top": "0px",
-			"w": "80px", 
-			"h":"120px",
+			"width": "150px",
 			"hasHumidity":300,
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
@@ -70,8 +67,7 @@
 			"name":"Activity 5", 
 			"left": "750px", 
 			"top": "0px",
-			"w": "80px", 
-			"h":"120px",
+			"width": "150px",
 			"hasHumidity":300,
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
@@ -83,8 +79,7 @@
 			"name":"Room 20", 
 			"left": "0px", 
 			"top": "530px",
-			"w": "126px", 
-			"h":"79px",
+			"width": "150px",
 			"hasHumidity":300,
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
@@ -96,8 +91,7 @@
 			"name":"Room 22", 
 			"left": "250px", 
 			"top": "530px",
-			"w": "58px", 
-			"h":"85px",
+			"width": "150px",
 			"hasHumidity":300,
 			"hasTemperature":60,
 			"hasPeopleCount":1800,
@@ -109,8 +103,7 @@
 			"name":"Podium", 
 			"left": "500px", 
 			"top": "530px",
-			"w": "244px", 
-			"h":"274px",
+			"width": "150px",
 			"hasHumidity":300,
 			"hasTemperature":180,
 			"hasPeopleCount":1800,
@@ -122,8 +115,7 @@
 			"name":"MarkBucks", 
 			"left": "750px", 
 			"top": "530px",
-			"w": "101px", 
-			"h":"150px",
+			"width": "150px",
 			"hasHumidity":300,
 			"hasTemperature":30,
 			"hasPeopleCount":3600,
@@ -133,7 +125,7 @@
 	},
 	"wifiname":"_The Cloud",
 	"map":{
-		"filename":"docs/kmi_north_wing_complete_transparent.png",
+		"img":"./docs/kmi_north_wing_complete_transparent.png",
 		"xoffset":136,
 		"yoffset":325,
 		"scale":0.05,
@@ -143,24 +135,25 @@
 	},
 	"robot":{
 		"style":{
-			"width":11,
-			"height":11
-		}
+			"width":13,
+			"height":13
+		},
+		"img":"./docs/hires-robot-blue_squared.png"
 	},
-	"kbserverip":"http://10.229.170.105:8080/",
+	"kbserverip":"http://192.168.1.67:8080/",
 	"queries": [
 		{
 		"name":"Query 1",
 		"value": "select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Podium> ) (<http://data.open.ac.uk/kmi/location/MarkBucks>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
-	},
-	{ "name": "Query 2",
-	  "value" : "select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { (<http://data.open.ac.uk/kmi/location/Activity4>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
-    }, 
-	{"name":"Query 3",
-	 "value":"select ?room ?wifiSignal where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Podium> ) (<http://data.open.ac.uk/kmi/location/MarkBucks>) } ?room <http://data.open.ac.uk/kmi/robo/hasWiFiSignal> ?wifiSignal. } }"
-	}, 
-	{ 	"name":"Query 4",
-		"value":"select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Room20> ) (<http://data.open.ac.uk/kmi/location/Room22>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
+		},
+		{ "name": "Query 2",
+			"value" : "select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { (<http://data.open.ac.uk/kmi/location/Activity4>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
+    	}, 
+		{"name":"Query 3",
+			"value":"select ?room ?wifiSignal where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Podium> ) (<http://data.open.ac.uk/kmi/location/MarkBucks>) } ?room <http://data.open.ac.uk/kmi/robo/hasWiFiSignal> ?wifiSignal. } }"
+		}, 
+		{ 	"name":"Query 4",
+			"value":"select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Room20> ) (<http://data.open.ac.uk/kmi/location/Room22>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
 	}],
 	"updatequery":"SELECT ?room ?validityGraph ?prop ?val where { graph ?validityGraph { ?room ?prop ?val } . graph <http://data.open.ac.uk/kmi/graph/static> {?room a <http://data.open.ac.uk/kmi/robo/Location> } . FILTER (?validityGraph != <http://data.open.ac.uk/kmi/graph/static> ) } ORDER BY ?room"
 }

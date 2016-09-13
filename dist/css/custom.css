@@ -1,7 +1,7 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
-  padding-top: 50px;
-  padding-bottom: 20px;
+  /*padding-top: 50px;
+  padding-bottom: 20px;*/
 }
 
 .panel-heading {
@@ -10,9 +10,9 @@ body {
 }
 
 .btn-custom {
-	color: #F5A9A9;
-	background-color : #9F1F1F;
-	border-color : #9F1F1F;
+	color: #b8e7f9;
+	background-color : #007DA9;
+	border-color : #007DA9;
 }
 
 .navbar-custom {
@@ -20,13 +20,17 @@ body {
 }
 
 .navbar-inverse .navbar-brand  {
-	color : #F5A9A9;
+	color : #007da9;
 }
 
 .navbar-inverse .navbar-brand:focus  ,
 .navbar-inverse .navbar-brand:hover  {
 	color : #F5A9A9;
 	
+}
+
+.header {
+	background-color : #007DA9;
 }
 
 .list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
@@ -92,5 +96,14 @@ body {
 .querycell {
 	padding: 2px;
 }
+
+img#logo {
+    height: 50px;
+    width: auto;
+}
+
+/*.kb-table tr {
+	background-color:#F5A9A9;	
+}*/
 
 

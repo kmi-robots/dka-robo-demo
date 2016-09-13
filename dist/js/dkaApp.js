@@ -16,13 +16,62 @@ angular.module('dkaApp', ['ui.bootstrap','swd.inspector-gadget','chart.js'
     
   }])
   
-.controller('dkaController', ['$scope','$interval','$sce', '$http','$timeout',dkaController]);
+.controller('dkaController', ['$scope','$interval','$sce', '$http','$timeout','$window', dkaController])
+.controller('indexController', ['$scope','$interval','$sce', '$http','$timeout','$window', indexController])
 
+
+function indexController($scope,$interval,$sce,$http,$timeout,$window) {
+	$scope.errorUrl = "error.html";
+	$scope.successUrl = "dka.html";
+	
+	var initialization = function() {
+		return $http.get('propertyValidity.json')
+		.success(function(data) {
+			$scope.configfile = data;	
+		})
+		.error(function(data,status,error,config){
+			console.log("Cannot load time validity: " + error);
+			alert("Property file can't be read. You can't continue with the demo.");
+		});
+	}
+	
+	var init = initialization();
+	init.then(function(result) {
+		// check connection with KB
+		var updateQuery = $scope.configfile.updatequery;
+
+		$http({
+			method: 'GET',
+			url: $scope.configfile.kbserverip+'query',
+			headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept':'application/json'},
+			params: {query: updateQuery},
+			timeout:5000
+		}).then(function successCallback(response) {
+			console.log("KB server connection successful");
+			// check connection with the Robot
+			$http({
+			    method: 'GET',
+			    url: $scope.configfile.kbserverip+'bot/wru',
+			    headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept':'application/json'},
+				timeout:5000
+			    	}).then(function successCallback(response) {
+						console.log("Robot connection successful");
+						$window.location = $scope.successUrl; 
+							
+			    	}, function errorCallback(response) {
+			    		console.log("Sorry, the robot is not responding");
+						alert("STOOP");
+						$window.location = $scope.errorUrl; 
+			    	});
+		}, function errorCallback(response) {
+			console.log("Problems while contacting the KB server");	
+			$window.location = $scope.errorUrl;
+		});
+	});
+}
 // WATCH OUT FOR: 
 // wifi name in the bot_server.py
-function dkaController($scope,$interval,$sce,$http,$timeout){
-	
-	// at the startup, we should have something that try to contact the robot and the kb server
+function dkaController($scope,$interval,$sce,$http,$timeout,$window){
 	
 	// random robot behaviour
 	$scope.getRandomNumber = function(max,min) {
@@ -95,7 +144,8 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			});
 		})
 		.error(function(data,status,error,config){
-			alert("Cannot load time validity: " + error);
+			console.log("Cannot load time validity: " + error);
+			alert("Property file can't be read. You can't continue with the demo.");
 		});
 	}
 	
@@ -112,8 +162,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 		$http({
 		    method: 'GET',
 		    url: $scope.configfile.kbserverip+'bot/wru',
-		    headers: {'Content-Type': 'application/x-www-form-urlencoded',
-				 	 "Access-Control-Allow-Origin": "*"}
+		    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		    	}).then(function successCallback(response) {
 					if($scope.configfile.map.invertaxes) {
 						var x = response.data.current_position.y;
@@ -138,7 +187,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 					$scope.configfile.robot.style.left = actualXPosition;
 							
 		    	}, function errorCallback(response) {
-		    		alert("[ROBOT] Sorry, the robot is not responding")
+		    		console.log("Sorry, the robot is not responding")
 		    	});
 	}
 	
@@ -206,7 +255,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			});
 		}, function errorCallback(response) {
 			console.log("UpdateRooms: " + response.status + " - " + response.statusText);
-			alert("Problems while contacting the KB server");
+			console.log("Problems while contacting the KB server");
 		});
 	}
 	
