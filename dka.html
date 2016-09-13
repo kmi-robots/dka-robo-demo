@@ -54,8 +54,8 @@
 				     style="left:{{room.left}};top:{{room.top}};width:{{room.width}}"  ng-hide="isRoomInvalid(room)" > <!-- -->
 					
 				  	 <div  id="chart" >
-				          <div class="panel panel-default">
-				            	 <div class="panel-heading"><b>{{room.name}}</b></div>
+				          <div class="panel">
+				            	 <div class="panel-heading room-heading"><b>{{room.name}}</b></div>
 								    <table class="kb-table table table-condensed">
 										<tbody>
 										       <tr ng-if="x.validity" ng-repeat="(i,x) in room.properties" ng-style="{background:x.color}">

@@ -7,6 +7,7 @@ body {
 .panel-heading {
 	padding-top:3px;
 	padding-bottom:3px;
+	background-color : #007DA9;
 }
 
 .btn-custom {
@@ -106,4 +107,8 @@ img#logo {
 	background-color:#F5A9A9;	
 }*/
 
+.room-heading {
+		background-color : #007DA9;
+		color:  #b8e7f9;
+}
 
