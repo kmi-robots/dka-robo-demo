@@ -93,7 +93,7 @@
 			"top": "530px",
 			"width": "150px",
 			"hasHumidity":300,
-			"hasTemperature":60,
+			"hasTemperature":30,
 			"hasPeopleCount":1800,
 			"hasWiFiSignal":340,
 			"validity":false
@@ -143,7 +143,7 @@
 	"kbserverip":"http://192.168.1.67:8080/",
 	"queries": [
 		{
-		"name":"Query 1",
+		"name":"Which ",
 		"value": "select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Podium> ) (<http://data.open.ac.uk/kmi/location/MarkBucks>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
 		},
 		{ "name": "Query 2",
@@ -152,8 +152,8 @@
 		{"name":"Query 3",
 			"value":"select ?room ?wifiSignal where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Podium> ) (<http://data.open.ac.uk/kmi/location/MarkBucks>) } ?room <http://data.open.ac.uk/kmi/robo/hasWiFiSignal> ?wifiSignal. } }"
 		}, 
-		{ 	"name":"Query 4",
-			"value":"select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Room20> ) (<http://data.open.ac.uk/kmi/location/Room22>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
+		{ 	"name":"Which room has the best temperature?",
+			"value":"select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Room20> ) (<http://data.open.ac.uk/kmi/location/Room22>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } } ORDER BY DESC(?temperature) LIMIT 1"
 	}],
 	"updatequery":"SELECT ?room ?validityGraph ?prop ?val where { graph ?validityGraph { ?room ?prop ?val } . graph <http://data.open.ac.uk/kmi/graph/static> {?room a <http://data.open.ac.uk/kmi/robo/Location> } . FILTER (?validityGraph != <http://data.open.ac.uk/kmi/graph/static> ) } ORDER BY ?room"
 }

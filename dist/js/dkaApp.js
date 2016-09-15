@@ -16,7 +16,7 @@ angular.module('dkaApp', ['ui.bootstrap','swd.inspector-gadget','chart.js'
     
   }])
   
-.controller('dkaController', ['$scope','$interval','$sce', '$http','$timeout','$window', dkaController])
+.controller('dkaController', ['$scope','$interval','$sce', '$http','$timeout', dkaController])
 .controller('indexController', ['$scope','$interval','$sce', '$http','$timeout','$window', indexController])
 
 
@@ -71,7 +71,7 @@ function indexController($scope,$interval,$sce,$http,$timeout,$window) {
 }
 // WATCH OUT FOR: 
 // wifi name in the bot_server.py
-function dkaController($scope,$interval,$sce,$http,$timeout,$window){
+function dkaController($scope,$interval,$sce,$http,$timeout){
 	
 	// random robot behaviour
 	$scope.getRandomNumber = function(max,min) {
@@ -324,6 +324,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout,$window){
 	};
 	
 	// update the plan monitoring
+	// TODO: check why sometimes it put a check on the whole plan before performing it
 	$scope.updatePlanExecution = function(){ 
 		// ASK ROBOT WHAT ARE YOU DOING: to be used to update the position of the robot
 		$http({
@@ -378,6 +379,9 @@ function dkaController($scope,$interval,$sce,$http,$timeout,$window){
 		}).then(function successCallback(response) {
 			if($scope.createPlan(response.data)) {
 				$scope.sendPlan(query);
+				$timeout(function callAtTimeout() {
+   				 	console.log("Timeout occurred");
+				},3000);
 			}
 			else {
 				$scope.resetCurrentPlanInfo();
