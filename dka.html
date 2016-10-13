@@ -7,7 +7,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="./docs/droid-logo-red.png">
+    <link rel="icon" href="./docs/32px-robot-blue.png">
 
     <title>DKA-robo demo</title>
 
@@ -54,8 +54,8 @@
 				     style="left:{{room.left}};top:{{room.top}};width:{{room.width}}"  ng-hide="isRoomInvalid(room)" > <!-- -->
 					
 				  	 <div  id="chart" >
-				          <div class="panel">
-				            	 <div class="panel-heading room-heading"><b>{{room.name}}</b></div>
+				          <div class="panel panel-cstm">
+				            	 <div class="panel-heading room-heading" style="background-color:{{room.backcolor}}"><b>{{room.name}}</b></div>
 								    <table class="kb-table table table-condensed">
 										<tbody>
 										       <tr ng-if="x.validity" ng-repeat="(i,x) in room.properties" ng-style="{background:x.color}">
@@ -86,6 +86,7 @@
           <h2>Query</h2>
 		  
 		  <textarea ng-model="radioModel" class="form-control" rows="5">{{ radioModel || 'Insert a SPARQL query'}}</textarea>
+		  <h3></h3>
 		  <div class="btn-group btn-group-justified" role="group" aria-label=""> 
     		  	<select name="querySelect" id="querySelect" ng-model="$parent.radioModel" class="form-control">
 				<option value="">--- Please select a query ---</option>
@@ -93,14 +94,20 @@
 		  	</select>
 		  </div>
       
-		  <h2></h2>
-	      <button type="button" ng-click="queryServer()" class="btn btn-lg btn-group-justified btn-custom">
+		  <!-- <h2></h2> -->
+		  <p class="btn-toolbar">
+			  <p></p>
+	      <button type="button" ng-click="queryServer()" class="btn  navbar-btn btn-custom pull-left">
 	          EXECUTE
 	      </button>
-	      <div style="height:5px"></div>
-	      <button type="button" ng-click="abort()" class="btn btn-lg btn-group-justified btn-custom">
-	          ABORT
-	      </button>
+	      <!-- <div style="height:5px"></div> --> 	
+  	      <!-- <p></p> -->
+		  <button type="button" ng-click="abort()" class="btn navbar-btn btn-custom pull-right">
+  	          ABORT
+  	      </button>
+		  </p>
+	     
+	      
         </div>
        
         <div class="col-md-4">

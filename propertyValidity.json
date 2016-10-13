@@ -36,7 +36,8 @@
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
 			"hasWiFiSignal":340,
-			"validity":false
+			"validity":false,
+			"backcolor": "#58E9F7"
 		},
 		"Activity3":
 		{
@@ -48,7 +49,8 @@
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
 			"hasWiFiSignal":340,
-			"validity":false
+			"validity":false,
+			"backcolor": "#56ACFB"
 		},
 		"Activity4":
 		{
@@ -60,7 +62,8 @@
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
 			"hasWiFiSignal":340,
-			"validity":false
+			"validity":false,
+			"backcolor": "#4A59DD"
 		},
 		"Activity5":
 		{
@@ -72,7 +75,8 @@
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
 			"hasWiFiSignal":340,
-			"validity":false
+			"validity":false,
+			"backcolor": "#AD47FE"
 		},
 		"Room20":
 		{
@@ -84,7 +88,8 @@
 			"hasTemperature":300,
 			"hasPeopleCount":3600,
 			"hasWiFiSignal":340,
-			"validity":false
+			"validity":false,
+			"backcolor": "#F2FF34"
 		},
 		"Room22":
 		{
@@ -96,7 +101,8 @@
 			"hasTemperature":30,
 			"hasPeopleCount":1800,
 			"hasWiFiSignal":340,
-			"validity":false
+			"validity":false,
+			"backcolor": "#B5393E"
 		},
 		"Podium":
 		{
@@ -108,7 +114,8 @@
 			"hasTemperature":180,
 			"hasPeopleCount":1800,
 			"hasWiFiSignal":340,
-			"validity":false
+			"validity":false,
+			"backcolor": "#F77428"
 		},
 		"MarkBucks":
 		{
@@ -120,7 +127,8 @@
 			"hasTemperature":30,
 			"hasPeopleCount":3600,
 			"hasWiFiSignal":340,
-			"validity":false
+			"validity":false,
+			"backcolor": "#4CFF52"
 		}
 	},
 	"wifiname":"_The Cloud",
@@ -135,21 +143,21 @@
 	},
 	"robot":{
 		"style":{
-			"width":13,
-			"height":13
+			"width":15,
+			"height":17
 		},
 		"img":"./docs/hires-robot-blue_squared.png"
 	},
-	"kbserverip":"http://192.168.1.67:8080/",
+	"kbserverip":"http://10.111.2.165:8080/",
 	"queries": [
 		{
-		"name":"Which ",
+		"name":"Which is the temperature of the Podium and the Markbucks?",
 		"value": "select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Podium> ) (<http://data.open.ac.uk/kmi/location/MarkBucks>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
 		},
-		{ "name": "Query 2",
+		{ "name": "What is the temperature of Activity 4?",
 			"value" : "select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { (<http://data.open.ac.uk/kmi/location/Activity4>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
     	}, 
-		{"name":"Query 3",
+		{"name":"What is the strenght of the wifi in the Podium and the Markbucks?",
 			"value":"select ?room ?wifiSignal where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Podium> ) (<http://data.open.ac.uk/kmi/location/MarkBucks>) } ?room <http://data.open.ac.uk/kmi/robo/hasWiFiSignal> ?wifiSignal. } }"
 		}, 
 		{ 	"name":"Which room has the best temperature?",
