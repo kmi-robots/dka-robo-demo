@@ -1,21 +1,5 @@
 
-angular.module('dkaApp', ['ui.bootstrap','swd.inspector-gadget','chart.js'
-])	
-
-.config(['ChartJsProvider', function (ChartJsProvider) {
-    // Configure all charts
-    ChartJsProvider.setOptions({
-      // responsive: false,
-	// maintainAspectRatio: false,
-    scaleOverride: false,
-	scaleOverlay: false,
-    scaleSteps: 5,
-    scaleStepWidth: 1,
-    scaleStartValue: 0
-    });
-    
-  }])
-  
+angular.module('dkaApp', ['ui.bootstrap'])	  
 .controller('dkaController', ['$scope','$interval','$sce', '$http','$timeout', dkaController])
 .controller('indexController', ['$scope','$interval','$sce', '$http','$timeout','$window', indexController])
 
