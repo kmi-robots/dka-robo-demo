@@ -298,12 +298,6 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 
 	$scope.resetPlan = function() {
 		console.log("[resetPlan]");
-		// $scope.lengthOfLastPlanIssuedByUser = 0;
-		// $scope.lastQueryPerformed = "";
-		// $scope.queryResults.show = false;
-		// $scope.queryResults.keys = [];
-		// $scope.queryResults.results = [];
-		// $scope.plan = []
 		$scope.planInExecution.plan = [];
 		$scope.planInExecution.inExecution = false;
 		$scope.planInExecution.terminated = false;
@@ -317,6 +311,14 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			method: 'GET',
 			url: $scope.configfile.kbserverip+'bot/currentplan'
 		}).then(function successCallback(response) {
+			var curPlan = $scope.createPlan(response.data);
+
+			if(curPlan.length > 0) {
+				$scope.planInExecution.plan = curPlan;
+				$scope.planInExecution.terminated = false;
+				$scope.planInExecution.inExecution = true;
+			}
+			$scope.startPlanExecutionMonitoring();
 			// if($scope.createPlan(response.data)) {
 			// 	// is the plan has been all executed, then don't show it
 			// 	$scope.startPlanExecutionMonitoring();
@@ -426,15 +428,6 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 				console.log("No plan available for query " + query);
 				$scope.resetPlan();
 			}
-			
-			// if($scope.createPlan(response.data)) {
-			// 	$scope.sendPlan(query);
-			// 	$timeout(function callAtTimeout() {
-			//    				 	console.log("[executePlanForQuery] Timeout occurred");
-			// 	},1000);
-			// 	$scope.startPlanExecutionMonitoring();
-			// }
-
 		}, function errorCallback(response) {
 			if(response.status == 409) {
 				console.log("The robot is busy");
@@ -541,7 +534,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 					$timeout(function callAtTimeout() {
 						// do nothing
 					},200).then(function() {
-					console.log("[queryServer] waiting for plan execution monitoring to stop");
+						console.log("[queryServer] waiting for plan execution monitoring to stop");
 			        });
 	        }
 	    }
