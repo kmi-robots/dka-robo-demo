@@ -116,7 +116,7 @@
           <!-- <p>Robo Plan print here...</p> -->
 		  
 		  <div class="list-group">
-			  <li ng-class="{disabled : action.executed, active : action.executing }" class="list-group-item" ng-repeat="action in plan"  > 
+			  <li ng-class="{disabled : action.executed, active : action.executing }" class="list-group-item" ng-repeat="action in planInExecution.plan"  > 
 				   <span ng-if="action.executed" class="fa fa-check fa-fw" aria-hidden="true"></span>
 				   <span ng-if="action.executing" class="fa fa-spinner fa-spin fa-fw" aria-hidden="true"></span>
 			   	{{action.name}} 
