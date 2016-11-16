@@ -3,24 +3,6 @@
 // TODO: watch out. Sometimes there are discrepancies between read values displayed by the KB
 // monitor, and the result of the query that updates the Results section
 
-//angular.module('dkaApp', ['ui.bootstrap'])	  
-//.controller('dkaController', ['$scope','$interval','$sce', '$http','$timeout', dkaController])
-//.controller('indexController', ['$scope','$interval','$sce', '$http','$timeout','$window', indexController])
-
-//.config(['ChartJsProvider', function (ChartJsProvider) {
-//     // Configure all charts
-//     ChartJsProvider.setOptions({
-//       // responsive: false,
-// 	// maintainAspectRatio: false,
-//     scaleOverride: false,
-// 	scaleOverlay: false,
-//     scaleSteps: 5,
-//     scaleStepWidth: 1,
-//     scaleStartValue: 0
-//     });
-//
-//   }])
-
 angular.module('dkaApp', ['ui.bootstrap',
 ])	
 .controller('dkaController', ['$scope','$interval','$sce', '$http','$timeout', dkaController])
@@ -104,14 +86,30 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 		return Math.floor(Math.random() * max) + min;
 	}
 	
-	$scope.actRandomly = function() {
+	$scope.behaveRandomly = function() {
 		$http({
 			method: 'GET',
 			url: $scope.configfile.kbserverip+'bot/isbusy'
 		}).then(function successCallback(response) {
 			if(response.data == "false") {
+				
+				$scope.stopPlanExecutionMonitoring();
+				if(planExecutionMonitoringPromise != undefined) {
+					while(planExecutionMonitoringPromise.$$state.status != 2) {
+							$timeout(function callAtTimeout() {
+								// do nothing
+							},200).then(function() {
+								console.log("[behaveRandomly] waiting for plan execution monitoring to stop");
+					        });
+			        }
+			    }
+				console.log("[behaveRandomly] stopPlanExecutionMonitoring effective");
+				$scope.resetPlan();
+				
+				$scope.lastQueryPerformed = $scope.radioModel;
+				$scope.planInExecution.issuedByUser = false;
 				var randomQuery = $scope.buildRandomQuery();
-				$scope.isCurrentPlanIssuedByUser = false;
+				$scope.planInExecution.generatingQuery = randomQuery;
 				$scope.executePlanForQuery(randomQuery);
 			}
 		}, function errorCallback(response) {
@@ -130,32 +128,20 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 
 		return "select ?room ?prop where { graph ?expiryDateInMs { VALUES(?room) {(<http://data.open.ac.uk/kmi/location/"+randomRoom+">)} ?room <http://data.open.ac.uk/kmi/robo/"+randomProperty+"> ?prop. } }";
 	}
-	
+		
+	//methods to periodically check the status of the plan
+	$scope.startRandomBehaviour = function() {
+	      // stops any running interval to avoid two intervals running at the same time
+		  $scope.stopRandomBehaviour();
 
-	
-	// //methods to periodically check the status of the plan
-	// $scope.startRandomBehaviour = function() {
-	//       // stops any running interval to avoid two intervals running at the same time
-	// 	  console.log("[startRandomBehaviour] stopping random behaviour");
-	// 	  $scope.stopRandomBehaviour();
-	// 	  console.log("[startRandomBehaviour] random behaviour stopped");
-	//       	  while($scope.performingRandomBehaviour) {
-	// 		  console.log($scope.performingRandomBehaviour);
-	//       	  }
-	//   	  console.log("[startRandomBehaviour] random behaviour stop effective");
-	//
-	//       // store the interval promise
-	//       $scope.randomBehaviourPromise = $interval($scope.actRandomly, 4000);
-	// 	  $scope.performingRandomBehaviour = true;
-	// };
-	//
-	// //stops the interval
-	// $scope.stopRandomBehaviour = function() {
-	//       $interval.cancel($scope.randomBehaviourPromise);
-	// 	  $scope.performingRandomBehaviour = false;
-	// };
-	
+	      // store the interval promise
+	      $scope.randomBehaviourPromise = $interval($scope.behaveRandomly, 4000);
+	};
 
+	//stops the interval
+	$scope.stopRandomBehaviour = function() {
+	      $interval.cancel($scope.randomBehaviourPromise);
+	};
 	
 	// loading the property validity time file
 	// TODO: this should be replaced with a call to the server that
@@ -189,7 +175,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 		$interval(placeRobot, 1000);
 		$scope.getPlan();
 		updateRooms();
-		// $scope.startRandomBehaviour();
+		$scope.startRandomBehaviour();
 		$interval(updateRoomCycle, 2000);
 	});
 	
@@ -365,7 +351,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			
 			// no actions left in the plan queue
 			if (response.data == "") {
-				console.log("[updatePlanExecution] terminated");
+				//console.log("[updatePlanExecution] terminated");
 				$scope.planInExecution.terminated = true;
 				$scope.planInExecution.inExecution = false;
 			}
@@ -384,19 +370,27 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 		});
 	}
 	
+	// watch when a plan pass from inExecution to terminated
 	$scope.$watch(
 		function(scope) { return scope.planInExecution.terminated; }, 
 		function(newValue,oldValue) {
 			console.log("[watch] " + $scope.planInExecution.terminated);
 			if($scope.planInExecution.issuedByUser == true && $scope.planInExecution.terminated == true) {
 				$timeout(function callAtTimeout() {
-				 	console.log("[watch] Timeout occurred");
+				 	console.log("[watch] Timeout occurred, performing query");
 				},1200).then(function() {
-						$scope.performQuery($scope.planInExecution.generatingQuery);
+					$scope.performQuery($scope.planInExecution.generatingQuery);
 				});
-				}
-			});
+				$timeout(function callAtTimeout() {
+				 	console.log("[watch] Timeout occurred, restarting random behaviour");
+				},500).then(function() {
+					$scope.startRandomBehaviour();
+				});
+			}
+		}
+	);
 			
+	// watch
 	$scope.$watch(
 		function(scope) {return scope.planInExecution.inExecution},
 		function(newValue,oldValue) {
@@ -416,10 +410,8 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'},
 			params: {query: query}
 		}).then(function successCallback(response) {
-			console.log("[executePlanForQuery] " + query);
-			console.log(response.data);
 			var curPlan = $scope.createPlan(response.data);
-			console.log(curPlan);
+
 			if(curPlan.length > 0) {
 				$scope.planInExecution.plan = curPlan;
 				$scope.sendPlan(query);
@@ -446,11 +438,6 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 		var planListForHtml = [];
 		
 		if(planArray.length > 0) {
-			
-			// if($scope.isCurrentPlanIssuedByUser) {
-			// 	$scope.lengthOfLastPlanIssuedByUser = planArray.length;
-			// }
-
 			for (index in planArray) {
 				var curPlanForHtml = {};
 				var actionName = planArray[index].name;
@@ -465,9 +452,8 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 				curPlanForHtml["executing"] = false;
 				planListForHtml.push(curPlanForHtml);
 			}
-	
-			return planListForHtml;
 		}
+		return planListForHtml;
 	}
 	
 	// actually sends the plan to the KB server
@@ -500,9 +486,10 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 		
 	$scope.abortButton = function() {
 		
-		$scope.stopPlanExecutionMonitoring();
-		if(planExecutionMonitoringPromise != undefined) {
-			
+		// first, stop the plan execution monitoring
+		$scope.stopPlanExecutionMonitoring();	
+		// and get sure of that
+		if(planExecutionMonitoringPromise != undefined) {		
 			while(planExecutionMonitoringPromise.$$state.status != 2) {
 					$timeout(function callAtTimeout() {
 						// do nothing
@@ -513,12 +500,28 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 	    }
 		console.log("[abortButton] stopPlanExecutionMonitoring effective");
 		
+		// then stop the random behaviour generator
+		$scope.stopRandomBehaviour();
+		// and get sure of that
+		if(randomBehaviourPromise != undefined) {
+			while(randomBehaviourPromise.$$state.status != 2) {
+					$timeout(function callAtTimeout() {
+						// do nothing
+					},200).then(function() {
+						console.log("[abortButton] waiting for random behaviour to stop");
+			        });
+	        }
+	    }
+		console.log("[abortButton] stopRandomBehaviour effective");
+		
 		var abortTest = abort();
 		abortTest.then(function successCallback(response) {
 				$scope.resetPlan();
-
-				console.log("[abort] restarting random behaviour");
-				//$scope.startRandomBehaviour();
+				// $timeout(function callAtTimeout() {
+				//  	console.log("[abortButton] Timeout occurred, restarting random behaviour");
+				// },4000).then(function() {
+				// 	$scope.startRandomBehaviour();
+				// });
 			}, function errorCallback(response) {
 				console.log("Problem while aborting: " + response.status);
 			});
@@ -526,8 +529,10 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 
 	$scope.queryServer = function(){
 		console.log("[queryServer] button pushed for query: " + $scope.radioModel);
-
+		
+		// first, stop the plan execution monitoring
 		$scope.stopPlanExecutionMonitoring();
+		// and get sure of that
 		if(planExecutionMonitoringPromise != undefined) {
 			
 			while(planExecutionMonitoringPromise.$$state.status != 2) {
@@ -539,6 +544,20 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 	        }
 	    }
 		console.log("[queryServer] stopPlanExecutionMonitoring effective");
+		
+		// then stop the random behaviour generator
+		$scope.stopRandomBehaviour();
+		// and get sure of that
+		if(randomBehaviourPromise != undefined) {
+			while(randomBehaviourPromise.$$state.status != 2) {
+					$timeout(function callAtTimeout() {
+						// do nothing
+					},200).then(function() {
+						console.log("[abortButton] waiting for random behaviour to stop");
+			        });
+	        }
+	    }
+		console.log("[abortButton] stopRandomBehaviour effective");
 		
 		var abortTest = abort();
 		
@@ -602,6 +621,10 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			});
 			$scope.queryResults.results.push(curItem);
 		});
+	}
+	
+	$scope.restartRandom = function() {
+		$scope.startRandomBehaviour();
 	}
 }	
 
