@@ -1,10 +1,33 @@
+// STUFF TO CHECK
+// TODO: check why sometimes it put a check on the whole plan before performing it
+// TODO: watch out. Sometimes there are discrepancies between read values displayed by the KB
+// monitor, and the result of the query that updates the Results section
 
-angular.module('dkaApp', ['ui.bootstrap'])	  
+//angular.module('dkaApp', ['ui.bootstrap'])	  
+//.controller('dkaController', ['$scope','$interval','$sce', '$http','$timeout', dkaController])
+//.controller('indexController', ['$scope','$interval','$sce', '$http','$timeout','$window', indexController])
+
+//.config(['ChartJsProvider', function (ChartJsProvider) {
+//     // Configure all charts
+//     ChartJsProvider.setOptions({
+//       // responsive: false,
+// 	// maintainAspectRatio: false,
+//     scaleOverride: false,
+// 	scaleOverlay: false,
+//     scaleSteps: 5,
+//     scaleStepWidth: 1,
+//     scaleStartValue: 0
+//     });
+//
+//   }])
+
+angular.module('dkaApp', ['ui.bootstrap',
+])	
 .controller('dkaController', ['$scope','$interval','$sce', '$http','$timeout', dkaController])
 .controller('indexController', ['$scope','$interval','$sce', '$http','$timeout','$window', indexController])
 
-
 function indexController($scope,$interval,$sce,$http,$timeout,$window) {
+	console.log("porcoddiaccio");
 	$scope.errorUrl = "error.html";
 	$scope.successUrl = "dka.html";
 	
@@ -57,6 +80,25 @@ function indexController($scope,$interval,$sce,$http,$timeout,$window) {
 // wifi name in the bot_server.py
 function dkaController($scope,$interval,$sce,$http,$timeout){
 	
+	$scope.performingRandomBehaviour = false;
+	var randomBehaviourPromise;
+	// used to monitor the plan execution, and to stop the monitoring when it's required
+	var planExecutionMonitoringPromise;
+	$scope.monitoringStopped = false;
+	$scope.results = false;
+	$scope.lastQueryPerformed = "";
+	$scope.lengthOfLastPlanIssuedByUser = 0;
+	$scope.isCurrentPlanIssuedByUser = false;
+	
+	$scope.planInExecution = {
+		plan:[],
+		inExecution:false,
+		terminated:true,
+		issuedByUser:false,
+		generatingQuery:"",
+		fromRandomBehaviour:true
+	};
+	
 	// random robot behaviour
 	$scope.getRandomNumber = function(max,min) {
 		return Math.floor(Math.random() * max) + min;
@@ -69,48 +111,57 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 		}).then(function successCallback(response) {
 			if(response.data == "false") {
 				var randomQuery = $scope.buildRandomQuery();
+				$scope.isCurrentPlanIssuedByUser = false;
 				$scope.executePlanForQuery(randomQuery);
 			}
 		}, function errorCallback(response) {
-			console.log("Problem while asking if the robot is busy: " + response.status);			
-		});	
+			console.log("Problem while asking if the robot is busy: " + response.status);
+		});
 	}
 	
 	$scope.buildRandomQuery = function() {
 		var properties = Object.keys($scope.configfile.generalproperties);
 		var randomPropertyIndex = $scope.getRandomNumber(properties.length,0);
 		var randomProperty = properties[randomPropertyIndex];
-		
+
 		var rooms = Object.keys($scope.configfile.rooms);
 		var randomRoomIndex = $scope.getRandomNumber(rooms.length,0);
 		var randomRoom = rooms[randomRoomIndex];
-		
+
 		return "select ?room ?prop where { graph ?expiryDateInMs { VALUES(?room) {(<http://data.open.ac.uk/kmi/location/"+randomRoom+">)} ?room <http://data.open.ac.uk/kmi/robo/"+randomProperty+"> ?prop. } }";
 	}
 	
-	var randomBehaviourPromise;
+
 	
-	// methods to periodically check the status of the plan
-	$scope.startRandomBehaviour = function() {
-	      // stops any running interval to avoid two intervals running at the same time
-	      $scope.stopRandomBehaviour(); 
-      
-	      // store the interval promise
-	      randomBehaviourPromise = $interval($scope.actRandomly, 4000);
-	};
+	// //methods to periodically check the status of the plan
+	// $scope.startRandomBehaviour = function() {
+	//       // stops any running interval to avoid two intervals running at the same time
+	// 	  console.log("[startRandomBehaviour] stopping random behaviour");
+	// 	  $scope.stopRandomBehaviour();
+	// 	  console.log("[startRandomBehaviour] random behaviour stopped");
+	//       	  while($scope.performingRandomBehaviour) {
+	// 		  console.log($scope.performingRandomBehaviour);
+	//       	  }
+	//   	  console.log("[startRandomBehaviour] random behaviour stop effective");
+	//
+	//       // store the interval promise
+	//       $scope.randomBehaviourPromise = $interval($scope.actRandomly, 4000);
+	// 	  $scope.performingRandomBehaviour = true;
+	// };
+	//
+	// //stops the interval
+	// $scope.stopRandomBehaviour = function() {
+	//       $interval.cancel($scope.randomBehaviourPromise);
+	// 	  $scope.performingRandomBehaviour = false;
+	// };
 	
-	// stops the interval
-	$scope.stopRandomBehaviour = function() {
-	      $interval.cancel(randomBehaviourPromise);
-	};
-	
-	// used to monitor the plan execution, and to stop the monitoring when it's required
-	var planExecutionMonitoringPromise;
+
 	
 	// loading the property validity time file
 	// TODO: this should be replaced with a call to the server that
 	// serves the information about the Room-property time validity
 	$scope.configfile = null;
+	
 	var initialization = function() {
 		return $http.get('propertyValidity.json')
 		.success(function(data) {
@@ -138,8 +189,8 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 		$interval(placeRobot, 1000);
 		$scope.getPlan();
 		updateRooms();
-		$scope.startRandomBehaviour();
-		$interval(cycle, 2000);
+		// $scope.startRandomBehaviour();
+		$interval(updateRoomCycle, 2000);
 	});
 	
 	function placeRobot() {
@@ -179,7 +230,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 		return uri.substr(uri.lastIndexOf('/')+1)
 	}
 
-	function cycle() {
+	function updateRoomCycle() {
 		updateRooms();
 	}
 	
@@ -196,7 +247,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			// TODO there is information about the Activity 6
 			// in the KB
 			var vars = response.data.vars;
-			var items = response.data.items;		
+			var items = response.data.items;	
 			var now = Date.now();
 			
 			angular.forEach(items,function(item) {
@@ -214,7 +265,7 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 					if(item.val.includes("^^")) {
 						value = item.val.split("\^\^")[0];
 					}
-				
+
 					var remainingTime = isValidUntil - now;
 					var percentageOfRemainingTime = remainingTime/(curRoom[property]*1000);
 				
@@ -226,8 +277,9 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 
 					var transparcencyValue = percentageOfRemainingTime;
 
-					if(remainingTime > 0) {
+					if(remainingTime > 0) {						
 						curRoom.properties[property].color = 'rgba(0, 180, 48, '+transparcencyValue+')';
+						curRoom.properties[property].fontcolor = 'rgba(0, 0, 0, '+transparcencyValue+')';
 						curRoom.properties[property].value = value;
 						curRoom.properties[property].validity = true;
 					}
@@ -242,31 +294,16 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			console.log("Problems while contacting the KB server");
 		});
 	}
-	
-	// TODO load them from somewhere else
-	// queries are not compliant with URLs
-	// $scope.queries = [
-// 		{'name':'Query 1',
-// 		'value': 'select ?room ?temp where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Podium> ) (<http://data.open.ac.uk/kmi/location/MarkBucks>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temp. } }'},
-// 		{ 'name': 'Query 2',
-// 		  'value' : 'SELECT ?room ?temp WHERE { graph ?expiryDateInMs { VALUES(?room) {(location:Room20 ) (location:Room22)}.  ?room robo:hasTemperature ?temp.  }}'
-// 	    },
-// 		{'name':'Query 3',
-// 		 'value':'SELECT ?room ((?temp+?h)/?ppl) AS ?comfort) WHERE { graph ?g { ?room robo:hasPeopleCount ?ppl }.  graph ?g1 {?room robo:hasHumidity ?h }. graph ?g2 {?room robo:hasTemperature ?temp }. graph ?g3 {?room a location:MeetingRoom } } ORDER BY DESC(?t) LIMIT 1	'
-// 		},
-// 		{ 	'name':'Query 4',
-// 			'value':'SELECT ?room ((?temp+?h)/?ppl) AS ?comfort) WHERE { graph ?g { VALUES(?room) {(location:Room22) (location:Podium)}. ?room robo:hasPeopleCount ?ppl }.  graph ?g1 { VALUES(?room) {(location:Room22) (location:Podium)}. ?room robo:hasHumidity ?h }. graph ?g2 { VALUES(?room) {(location:Room22) (location:Podium)}. ?room robo:hasTemperature ?temp }.} ORDER BY DESC(?t) LIMIT 1 '
-// 		}];
-	
-	$scope.results = false;
-	$scope.lastQueryPerformed = "";
-	$scope.lengthOfLastPlanIssuedByUser = 0;
-	$scope.isCurrentPlanIssuedByUser = false;
-	
-	$scope.resetCurrentPlanInfo = function() {
-		$scope.isCurrentPlanIssuedByUser = false;
+
+
+	$scope.resetPlan = function() {
+		console.log("[resetPlan]");
 		$scope.lengthOfLastPlanIssuedByUser = 0;
 		$scope.lastQueryPerformed = "";
+		$scope.queryResults.show = false;
+		$scope.queryResults.keys = [];
+		$scope.queryResults.results = [];
+		$scope.plan = []
 	}
 	
 	$scope.getPlan = function() {
@@ -275,11 +312,11 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			url: $scope.configfile.kbserverip+'bot/currentplan'
 		}).then(function successCallback(response) {
 			if($scope.createPlan(response.data)) {
+				// is the plan has been all executed, then don't show it
 				$scope.startPlanExecutionMonitoring();
 			}
 		}, function errorCallback(response) {
 			console.log("GetPlan: " + response.status + " - " + response.statusText);
-			$scope.radioModel = "Sorry, problem while sending the request. ERROR " + response.status;
 		});	
 	}
 	
@@ -295,66 +332,90 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 	
 	// methods to periodically check the status of the plan
 	$scope.startPlanExecutionMonitoring = function() {
+		 console.log("[startPlanExecutionMonitoring]");
 	      // stops any running interval to avoid two intervals running at the same time
-	      $scope.stopPlanExecutionMonitoring(); 
+		 console.log("[startPlanExecutionMonitoring] calling stopPlanExecutionMonitoring");			
+		 $scope.stopPlanExecutionMonitoring();
+		 console.log("[startPlanExecutionMonitoring] called stopPlanExecutionMonitoring");
+		 while(!$scope.monitoringStopped) {
+			$timeout(function callAtTimeout() {
+			 	console.log("[startPlanExecutionMonitoring] Timeout occurred");
+			},200);
+		 }
+		 console.log("[startPlanExecutionMonitoring] stopPlanExecutionMonitoring effective");
       
 	      // store the interval promise
 	      planExecutionMonitoringPromise = $interval($scope.updatePlanExecution, 1000);
+		  $scope.monitoringStopped = false;
 	};
 	
 	// stops the interval
 	$scope.stopPlanExecutionMonitoring = function() {
-	      $interval.cancel(planExecutionMonitoringPromise);
+		console.log("[stopPlanExecutionMonitoring]");
+	    $interval.cancel(planExecutionMonitoringPromise);
+		$scope.monitoringStopped = true;
+		//$scope.resetPlan();
 	};
 	
 	// update the plan monitoring
-	// TODO: check why sometimes it put a check on the whole plan before performing it
 	$scope.updatePlanExecution = function(){ 
+		// console.log("[updatePlanExecution]");
 		// ASK ROBOT WHAT ARE YOU DOING: to be used to update the position of the robot
 		$http({
 			method: 'GET',
 			url: $scope.configfile.kbserverip+'bot/doing',
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		}).then(function successCallback(response) {
+			// console.log("[updatePlanExecution] received response: ");
+			// console.log(response)
+			
+			// no actions left in the plan queue
 			if (response.data == "") {
+				//console.log("[updatePlanExecution] doing nothing");
 				$scope.terminated = true;
 				for (var i = 0; i < $scope.plan.length; ++i) {
-					$scope.plan[i].executing = false;
-					$scope.plan[i].executed = true;
+				 	$scope.plan[i].executing = false;
+				 	$scope.plan[i].executed = true;
 				}
-				$scope.stopPlanExecutionMonitoring();
 			}
-			else {							
-				var curIndex = response.data.index;					
+			else {
+				//console.log("[updatePlanExecution] doing:");
+				//console.log(response);						
+				var curIndex = response.data.index;
+				//console.log("curIndex " + curIndex);
+				//console.log("lengthOf " + $scope.lengthOfLastPlanIssuedByUser);			
 				for (var i = 0; i < curIndex; ++i) {
 					$scope.plan[i].executing = false;
 					$scope.plan[i].executed = true;
 				}
 				$scope.plan[curIndex].executing = true;
 				
-				if($scope.isCurrentPlanIssuedByUser && curIndex == $scope.lengthOfLastPlanIssuedByUser-1) {
-					$scope.performQuery($scope.lastQueryPerformed);
-					$scope.resetCurrentPlanInfo();
-				}
+				// it means that the plan has terminated
+				//if($scope.isCurrentPlanIssuedByUser && curIndex == $scope.lengthOfLastPlanIssuedByUser-1) {
+					//$scope.performQuery($scope.lastQueryPerformed);
+					//$scope.isCurrentPlanIssuedByUser = false;
+					//$scope.startRandomBehaviour();
+				//}
 			}
 		}, function errorCallback(response) {
 			console.log("UpdatePlanExecution: " + response.status + " - " + response.statusText);
-			$scope.radioModel = "Sorry, problem while asking what are you doing. ERROR " + response.status
 		});
 	}
 	
-	$scope.abort = function() {
-		$http({
-			method: 'DELETE',
-			url: $scope.configfile.kbserverip+'bot/abort'
-		}).then(function successCallback(response) {
-			console.log("Abort succesful");
-		}, function errorCallback(response) {
-			console.log("Problem while aborting: " + response.status);
-		});	
-	}
+	$scope.$watch(
+		function(scope) { return scope.terminated; }, 
+		function(newValue,oldValue) {
+			if($scope.isCurrentPlanIssuedByUser && $scope.terminated == true) {
+				$timeout(function callAtTimeout() {
+				 	console.log("[watch] Timeout occurred");
+				},1500).then(function() {
+						$scope.performQuery($scope.lastQueryPerformed);
+				});
+				}
+			});
 	
 	$scope.executePlanForQuery = function(query) {
+		console.log("[executePlanForQuery]: " + query);
 		$http({
 			method: 'GET',
 			url: $scope.configfile.kbserverip+'planner/plan',
@@ -364,22 +425,24 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			if($scope.createPlan(response.data)) {
 				$scope.sendPlan(query);
 				$timeout(function callAtTimeout() {
-   				 	console.log("Timeout occurred");
-				},3000);
+   				 	console.log("[executePlanForQuery] Timeout occurred");
+				},1000);
+				$scope.startPlanExecutionMonitoring();
 			}
 			else {
-				$scope.resetCurrentPlanInfo();
+				$scope.resetPlan();
 				console.log("No plan available for query " + query);
 			}
 		}, function errorCallback(response) {
 			if(response.status == 409) {
 				console.log("The robot is busy");
-				$scope.resetCurrentPlanInfo();
+				$scope.resetPlan();
+				// if no random behaviour, start it
 			}
 			else {
 				console.log("ExecutePlanForQuery: " + response.status + " - " + response.statusText);
-				$scope.radioModel = "Sorry, problem while sending the request. ERROR " + response.status;
-				$scope.resetCurrentPlanInfo();
+				$scope.resetPlan();
+				// if no random behaviour, start it
 			}
 		});	
 	}
@@ -387,6 +450,9 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 	// create the object in the scope that
 	// controls the plan monitoring div
 	$scope.createPlan = function(planArray) {
+		console.log("[createPlan]: ");
+		console.log(planArray);
+		
 		if(planArray.length > 0) {
 			
 			if($scope.isCurrentPlanIssuedByUser) {
@@ -411,36 +477,110 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			}
 	
 			$scope.plan = planListForHtml;
+			console.log("[createPlan] created plan: ");
+			console.log($scope.plan);
 			return true;
 		}
-		else return false;
+		else {
+			console.log("[createPlan] failed in creating the plan");
+			return false;
+		}
 	}
 	
 	// actually sends the plan to the KB server
 	$scope.sendPlan = function(queryForPlan) {
+		console.log("[sendPlan]: " + queryForPlan);
 			$http({
 				method: 'GET',
 				url: $scope.configfile.kbserverip+'bot/send',
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'},
 				params: {query: queryForPlan}
 			}).then(function successCallback(response) {
-				$scope.stopPlanExecutionMonitoring();
 				$scope.terminated = false;
-				$scope.startPlanExecutionMonitoring();
 			}, function errorCallback(response) {
 				console.log("SendPlan: " + response.status + " - " + response.statusText);
-				$scope.radioModel = "Sorry, problem while sending the request. ERROR " + response.status;
-				$scope.resetCurrentPlanInfo();
+				//$scope.radioModel = "Sorry, problem while sending the request. ERROR " + response.status;
+				$scope.resetPlan();
 			});
 		}
-	
-	$scope.queryServer = function(){	
-		// whatever happens, first abort
-		$scope.abort();
+		
+		var abort = function() {
+			return $http({
+				method: 'DELETE',
+				url: $scope.configfile.kbserverip+'bot/abort'
+			});
+		}
+		
+	$scope.abortButton = function() {
+		var abortTest = abort();
+		abortTest.then(function successCallback(response) {
+				  		    // console.log("[abort] stopping random behaviour");
+// 				  		    $scope.stopRandomBehaviour();
+// 				  		    console.log("[abort] random behaviour stopped");
+// 				        	while($scope.performingRandomBehaviour) {
+// 				  			   console.log($scope.performingRandomBehaviour);
+// 					$timeout(function callAtTimeout() {
+// 				 		console.log("[abort] Timeout occurred for random behaviour");
+// 					},200);
+// 				        	}
+// 				  	  	 	console.log("[abort] random behaviour stop effective");
+
+				console.log("[abort] calling stopPlanExecutionMonitoring");
+				$scope.stopPlanExecutionMonitoring();
+				console.log("[abort] called stopPlanExecutionMonitoring");
+				while(!$scope.monitoringStopped) {
+					$timeout(function callAtTimeout() {
+					 	console.log("[abort] Timeout occurred");
+					},200);
+				}
+				console.log("[abort] stopPlanExecutionMonitoring effective");
+				$scope.resetPlan();
+
+				console.log("[abort] restarting random behaviour");
+				//$scope.startRandomBehaviour();
+			}, function errorCallback(response) {
+				console.log("Problem while aborting: " + response.status);
+			});
+	}
+
+	$scope.queryServer = function(){
+		console.log("[queryServer] button pushed for query: " + $scope.radioModel);
+		
 		// then tries to send the actual plan
+		//$scope.planInExecution.issuedByUser = true;
 		$scope.isCurrentPlanIssuedByUser = true;
-		$scope.executePlanForQuery($scope.radioModel);
-		$scope.lastQueryPerformed = $scope.radioModel;
+
+		var abortTest = abort();
+		
+		abortTest.then(function successCallback(response) {
+					// 				  		    console.log("[abort] stopping random behaviour");
+					// 				  		    $scope.stopRandomBehaviour();
+					// 				  		    console.log("[abort] random behaviour stopped");
+					// 				        	while($scope.performingRandomBehaviour) {
+					// 				  			   console.log($scope.performingRandomBehaviour);
+					// $timeout(function callAtTimeout() {
+					// 				 		console.log("[abort] Timeout occurred for random behaviour");
+					// },200);
+					// 				        	}
+					// 				  	  	 	console.log("[abort] random behaviour stop effective");
+
+
+				$scope.stopPlanExecutionMonitoring();
+				while(!$scope.monitoringStopped) {
+					$timeout(function callAtTimeout() {
+					 	console.log("[abort] Timeout occurred");
+					},200);
+				}
+				console.log("[abort] stopPlanExecutionMonitoring effective");
+				$scope.resetPlan();
+
+				console.log("[queryServer] now can perform query from pushed button");
+				$scope.lastQueryPerformed = $scope.radioModel;
+				$scope.executePlanForQuery($scope.radioModel);
+			}, function errorCallback(response) {
+				console.log("Problem while aborting: " + response.status);
+				// restart random behaviour
+			});
 	}
 	
 	$scope.queryResults = {
@@ -450,6 +590,10 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 	};
 	
 	$scope.performQuery = function(query) {
+		console.log("[performQuery]: " + query)
+		$timeout(function callAtTimeout() {
+		 	console.log("[performQuery] Timeout occurred in perform query");
+		},4000);
 		$http({
 			method: 'GET',
 			url: $scope.configfile.kbserverip+'query',
@@ -459,12 +603,12 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			$scope.updateResults(response.data);
 		}, function errorCallback(response) {
 			console.log("PerformQuery: " + response.status + " - " + response.statusText);
-			$scope.radioModel = "Sorry, problem while sending the reuqest for query. ERROR " + response.status;
-			$scope.resetCurrentPlanInfo();
+			$scope.resetPlan();
 		});
 	}
 	
 	$scope.updateResults = function(data) {
+		console.log("[updateResults]: " + data)
 		$scope.queryResults.show = true;
 		$scope.queryResults.keys = data.vars;
 		

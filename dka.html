@@ -58,7 +58,8 @@
 				            	 <div class="panel-heading room-heading" style="background-color:{{room.backcolor}}"><b>{{room.name}}</b></div>
 								    <table class="kb-table table table-condensed">
 										<tbody>
-										       <tr ng-if="x.validity" ng-repeat="(i,x) in room.properties" ng-style="{background:x.color}">
+										       <!--<tr ng-if="x.validity" ng-repeat="(i,x) in room.properties" ng-style="{background:x.color}">-->
+											   <tr ng-if="x.validity" ng-repeat="(i,x) in room.properties" style="background:{{x.color}};color:{{x.fontcolor}}">
 												   <td>{{x.name}}</td>
 												   <td>{{x.value}}</td>
 										       </tr>
@@ -102,7 +103,7 @@
 	      </button>
 	      <!-- <div style="height:5px"></div> --> 	
   	      <!-- <p></p> -->
-		  <button type="button" ng-click="abort()" class="btn navbar-btn btn-custom pull-right">
+		  <button type="button" ng-click="abortButton()" class="btn navbar-btn btn-custom pull-right">
   	          ABORT
   	      </button>
 		  </p>
@@ -130,14 +131,6 @@
 	  		  <div ng-model="queryResults" ng-show="queryResults.show">
 				  <table class="querytable table table-striped">
 				  	<tbody>
-						<!--<tr>
-							<th>test1</th>
-							<th>test2</th>
-						</tr>
-						<tr>
-							<td>test test 1</td>
-							<td>test test 2</td>
-						</tr>-->
 						<tr>
 							<th ng-repeat="key in queryResults.keys" class="querycell">{{key}}</td>
 						</tr>
@@ -154,7 +147,8 @@
 	  
 
       <footer>
-        <p>&copy; Data Science group, Knowledge Media institute, The Open University, 2016</p>
+        <!--<p>&copy; Data Science group, Knowledge Media institute, The Open University, 2016</p>-->
+		<p>&copy; <a href="https://dsg.kmi.open.ac.uk/">Data Science group</a>, Knowledge Media institute, The Open University, 2016</p>
       </footer>
     </div> <!-- /container -->
 

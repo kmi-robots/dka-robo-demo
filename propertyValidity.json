@@ -148,7 +148,7 @@
 		},
 		"img":"./docs/hires-robot-blue_squared.png"
 	},
-	"kbserverip":"http://10.111.2.165:8080/",
+	"kbserverip":"http://137.108.124.224:8080/",
 	"queries": [
 		{
 		"name":"Which is the temperature of the Podium and the Markbucks?",
@@ -162,6 +162,13 @@
 		}, 
 		{ 	"name":"Which room has the best temperature?",
 			"value":"select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Room20> ) (<http://data.open.ac.uk/kmi/location/Room22>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } } ORDER BY DESC(?temperature) LIMIT 1"
-	}],
+	},
+	{ "name": "What is the temperature of Room 22?",
+		"value" : "select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { (<http://data.open.ac.uk/kmi/location/Room22>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
+	},
+	{ "name": "What is the temperature of Room 20?",
+		"value" : "select ?room ?temperature where {graph ?expiryDateInMs { VALUES(?room) { (<http://data.open.ac.uk/kmi/location/Room20>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
+	}
+],
 	"updatequery":"SELECT ?room ?validityGraph ?prop ?val where { graph ?validityGraph { ?room ?prop ?val } . graph <http://data.open.ac.uk/kmi/graph/static> {?room a <http://data.open.ac.uk/kmi/robo/Location> } . FILTER (?validityGraph != <http://data.open.ac.uk/kmi/graph/static> ) } ORDER BY ?room"
 }

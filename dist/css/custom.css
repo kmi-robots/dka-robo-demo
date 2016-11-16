@@ -50,8 +50,12 @@ body {
 }
 
 .jumbotron {
-	padding-top: 20px;
-	height:800px;
+	/*padding-top: 20px;
+	height:800px;*/
+	padding-top: 10px;
+	height:750px;
+	margin-bottom: 0px;
+	padding-bottom: 0px;
 }
 
 /* d3 */
@@ -116,5 +120,11 @@ img#logo {
 .panel-cstm {
 	border: 2px solid  #007DA9 ;
 	border-radius: 6px;
+}
+
+/* added in the merging */
+.h-margin {
+	margin-top: 0px;
+	margin-bottom: 10px;
 }
 
