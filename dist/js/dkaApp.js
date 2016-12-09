@@ -49,7 +49,6 @@ function indexController($scope,$interval,$sce,$http,$timeout,$window) {
 							
 			    	}, function errorCallback(response) {
 			    		console.log("Sorry, the robot is not responding");
-						alert("STOOP");
 						$window.location = $scope.errorUrl; 
 			    	});
 		}, function errorCallback(response) {
@@ -418,7 +417,13 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			}
 			else {
 				console.log("No plan available for query " + query);
+				if($scope.planInExecution.issuedByUser == true) {
+					alert("Sorry, no play available for the selected query.");
+				}
 				$scope.resetPlan();
+				
+				// HERE
+				$scope.startRandomBehaviour();	
 			}
 		}, function errorCallback(response) {
 			if(response.status == 409) {
@@ -427,7 +432,9 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			else {
 				console.log("ExecutePlanForQuery: " + response.status + " - " + response.statusText);
 				$scope.resetPlan();
-				// if no random behaviour, start it
+				
+				// HERE
+				$scope.startRandomBehaviour();	
 			}
 		});	
 	}
@@ -472,8 +479,10 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 				},500).then(function() {$scope.startPlanExecutionMonitoring()});
 			}, function errorCallback(response) {
 				console.log("SendPlan: " + response.status + " - " + response.statusText);
-				// start random behaviour
 				$scope.resetPlan();
+				
+				// HERE
+				$scope.startRandomBehaviour();			
 			});
 	}
 		
@@ -598,6 +607,8 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 			headers: {'Content-Type': 'application/x-www-form-urlencoded','Accept':'application/json'},
 			params: {query: query}
 		}).then(function successCallback(response) {
+			console.log("RESULTS");
+			console.log(response.data);
 			$scope.updateResults(response.data);
 		}, function errorCallback(response) {
 			console.log("PerformQuery: " + response.status + " - " + response.statusText);
