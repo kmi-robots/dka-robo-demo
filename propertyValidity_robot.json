@@ -1,0 +1,183 @@
+{
+	"generalproperties": {
+		"hasTemperature":	{
+			"name":"temperature",
+			"value":0, 
+			"color":"rgba(0, 180, 48, 1)", 
+			"validity":true
+		},
+		"hasHumidity": {
+			"name":"humidity",
+			"value":0, 
+			"color":"rgba(0, 180, 48, 1)",
+			"validity":true
+		},
+		"hasWiFiSignal": {
+			"name":"wifi",
+			"value":0, 
+			"color":"rgba(0, 180, 48, 1)",
+			"validity":true
+		},
+		"hasPeopleCount": {
+			"name":"people",
+			"value":0, 
+			"color":"rgba(0, 180, 48, 1)",
+			"validity":true
+		}
+	},
+	"rooms":{
+		"Activity2":
+		{
+			"name":"Activity 2", 
+			"left": "0px", 
+			"top": "0px",
+			"width": "150px",
+			"hasHumidity":300,
+			"hasTemperature":300,
+			"hasPeopleCount":3600,
+			"hasWiFiSignal":340,
+			"validity":false,
+			"backcolor": "#58E9F7"
+		},
+		"Activity3":
+		{
+			"name":"Activity 3", 
+			"left": "250px", 
+			"top": "0px",
+			"width": "150px",
+			"hasHumidity":300,
+			"hasTemperature":300,
+			"hasPeopleCount":3600,
+			"hasWiFiSignal":340,
+			"validity":false,
+			"backcolor": "#56ACFB"
+		},
+		"Activity4":
+		{
+			"name":"Activity 4", 
+			"left": "500px", 
+			"top": "0px",
+			"width": "150px",
+			"hasHumidity":300,
+			"hasTemperature":300,
+			"hasPeopleCount":3600,
+			"hasWiFiSignal":340,
+			"validity":false,
+			"backcolor": "#4A59DD"
+		},
+		"Activity5":
+		{
+			"name":"Activity 5", 
+			"left": "750px", 
+			"top": "0px",
+			"width": "150px",
+			"hasHumidity":300,
+			"hasTemperature":300,
+			"hasPeopleCount":3600,
+			"hasWiFiSignal":340,
+			"validity":false,
+			"backcolor": "#AD47FE"
+		},
+		"Room20":
+		{
+			"name":"Room 20", 
+			"left": "0px", 
+			"top": "520px",
+			"width": "150px",
+			"hasHumidity":300,
+			"hasTemperature":300,
+			"hasPeopleCount":3600,
+			"hasWiFiSignal":340,
+			"validity":false,
+			"backcolor": "#F2FF34"
+		},
+		"Room22":
+		{
+			"name":"Room 22", 
+			"left": "250px", 
+			"top": "520px",
+			"width": "150px",
+			"hasHumidity":300,
+			"hasTemperature":30,
+			"hasPeopleCount":1800,
+			"hasWiFiSignal":340,
+			"validity":false,
+			"backcolor": "#B5393E"
+		},
+		"Podium":
+		{
+			"name":"Podium", 
+			"left": "500px", 
+			"top": "520px",
+			"width": "150px",
+			"hasHumidity":300,
+			"hasTemperature":180,
+			"hasPeopleCount":1800,
+			"hasWiFiSignal":340,
+			"validity":false,
+			"backcolor": "#F77428"
+		},
+		"MarkBucks":
+		{
+			"name":"MarkBucks", 
+			"left": "750px", 
+			"top": "520px",
+			"width": "150px",
+			"hasHumidity":300,
+			"hasTemperature":30,
+			"hasPeopleCount":3600,
+			"hasWiFiSignal":340,
+			"validity":false,
+			"backcolor": "#4CFF52"
+		}
+	},
+	"wifiname":"_The Cloud",
+	"map":{
+		"img":"./docs/north-south-wings+podium_merge.png",
+		"xoffset":136,
+		"yoffset":325,
+		"scale":0.05,
+		"invertaxes":true,
+		"xmultiplier":-1,
+		"ymultiplier":-1
+	},
+	"robot":{
+		"style":{
+			"width":15,
+			"height":17
+		},
+		"img":"./docs/hires-robot-blue_squared.png"
+	},
+	"kbserverip":"http://localhost:8080/",
+	"queries": [
+		{
+		"name":"Which is the warmest room between the Podium and the Markbucks?",
+		"value": "SELECT ?room ?temperature WHERE {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Podium> ) (<http://data.open.ac.uk/kmi/location/MarkBucks>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } } ORDER BY DESC(?temperature) LIMIT 1"
+		},
+		{ "name": "What is the temperature of Activity 4?",
+			"value" : "SELECT ?room ?temperature WHERE {graph ?expiryDateInMs { VALUES(?room) { (<http://data.open.ac.uk/kmi/location/Activity4>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
+    	}, 
+		{"name":"What is the strenght of the wifi in the Podium and the Markbucks?",
+			"value":"SELECT ?room ?wifiSignal WHERE {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Podium> ) (<http://data.open.ac.uk/kmi/location/MarkBucks>) } ?room <http://data.open.ac.uk/kmi/robo/hasWiFiSignal> ?wifiSignal. } } ORDER BY DESC(?wifiSignal)"
+		}, 
+		{ 	"name":"Which office is the warmest?",
+			"value":"SELECT ?room ?temperature WHERE {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Room20> ) (<http://data.open.ac.uk/kmi/location/Room22>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } } ORDER BY DESC(?temperature) LIMIT 1"
+	},
+	{ "name": "Which meeting room is the most comfortable?",
+			"value" : "SELECT ?room  ( STR((<http://www.w3.org/2001/XMLSchema#float>(?temp)+<http://www.w3.org/2001/XMLSchema#float>(?h))/(<http://www.w3.org/2001/XMLSchema#float>(?ppl)))  AS ?comfort) WHERE { graph ?g { VALUES(?room) {(<http://data.open.ac.uk/kmi/location/Room22>) (<http://data.open.ac.uk/kmi/location/Podium>)}. ?room <http://data.open.ac.uk/kmi/robo/hasPeopleCount> ?ppl }. graph ?g1 {VALUES(?room) {(<http://data.open.ac.uk/kmi/location/Room22>) (<http://data.open.ac.uk/kmi/location/Podium>)}. ?room <http://data.open.ac.uk/kmi/robo/hasHumidity> ?h }. graph ?g2 {VALUES(?room) {(<http://data.open.ac.uk/kmi/location/Room22>) (<http://data.open.ac.uk/kmi/location/Podium>)}. ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temp }.} ORDER BY ASC(?comfort) LIMIT 1"
+		},
+		{ "name": "Which room is the warmest? (unfeasible)",
+					"value" : "SELECT ?room ?temperature WHERE {graph ?expiryDateInMs { VALUES(?room) { ( <http://data.open.ac.uk/kmi/location/Room20> ) (<http://data.open.ac.uk/kmi/location/Room22>) ( <http://data.open.ac.uk/kmi/location/Podium> ) ( <http://data.open.ac.uk/kmi/location/MarkBucks> )} ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } } ORDER BY DESC(?temperature) LIMIT 1"
+				},
+	{ "name": "What is the temperature of Room 22?",
+		"value" : "SELECT ?room ?temperature WHERE {graph ?expiryDateInMs { VALUES(?room) { (<http://data.open.ac.uk/kmi/location/Room22>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
+	},
+	{ "name": "What is the temperature of Room 20?",
+		"value" : "SELECT ?room ?temperature WHERE {graph ?expiryDateInMs { VALUES(?room) { (<http://data.open.ac.uk/kmi/location/Room20>) } ?room <http://data.open.ac.uk/kmi/robo/hasTemperature> ?temperature. } }"
+	},
+	{ "name": "How many people are there in Podium?",
+		"value" : "SELECT ?room ?temperature WHERE {graph ?expiryDateInMs { VALUES(?room) { (<http://data.open.ac.uk/kmi/location/Podium>) } ?room <http://data.open.ac.uk/kmi/robo/hasPeopleCount> ?temperature. } }"
+	}
+],
+	"updatequery":"SELECT ?room ?validityGraph ?prop ?val WHERE { graph ?validityGraph { ?room ?prop ?val } . graph <http://data.open.ac.uk/kmi/graph/static> {?room a <http://data.open.ac.uk/kmi/robo/Location> } . FILTER (?validityGraph != <http://data.open.ac.uk/kmi/graph/static> ) } ORDER BY ?room"
+}
