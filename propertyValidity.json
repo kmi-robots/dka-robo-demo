@@ -148,7 +148,7 @@
 		},
 		"img":"./docs/hires-robot-blue_squared.png"
 	},
-	"kbserverip":"http://192.168.8.102:8080/",
+	"kbserverip":"http://localhost:8080/",
 	"queries": [
 		{
 		"name":"Which is the warmest room between the Podium and the Markbucks?",
