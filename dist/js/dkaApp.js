@@ -9,12 +9,12 @@ angular.module('dkaApp', ['ui.bootstrap',
 .controller('indexController', ['$scope','$interval','$sce', '$http','$timeout','$window', indexController])
 
 function indexController($scope,$interval,$sce,$http,$timeout,$window) {
-	console.log("porcoddiaccio");
 	$scope.errorUrl = "error.html";
 	$scope.successUrl = "dka.html";
 	
 	var initialization = function() {
-		return $http.get('propertyValidity.json')
+		// return $http.get('propertyValidity.json')
+		return $http.get('propertyValidity_robot.json')
 		.success(function(data) {
 			$scope.configfile = data;	
 		})
@@ -148,7 +148,8 @@ function dkaController($scope,$interval,$sce,$http,$timeout){
 	$scope.configfile = null;
 	
 	var initialization = function() {
-		return $http.get('propertyValidity.json')
+		//return $http.get('propertyValidity.json')
+		return $http.get('propertyValidity_robot.json')
 		.success(function(data) {
 			$scope.configfile = data;
 			

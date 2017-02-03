@@ -131,12 +131,12 @@
 			"backcolor": "#4CFF52"
 		}
 	},
-	"wifiname":"_The Cloud",
+	"wifiname":"eduroam",
 	"map":{
-		"img":"./docs/north-south-wings+podium_merge.png",
+		"img":"./docs/north-south-wings+podium_merge_cut.png",
 		"xoffset":136,
 		"yoffset":325,
-		"scale":0.05,
+		"scale":0.5,
 		"invertaxes":true,
 		"xmultiplier":-1,
 		"ymultiplier":-1
@@ -148,7 +148,7 @@
 		},
 		"img":"./docs/hires-robot-blue_squared.png"
 	},
-	"kbserverip":"http://localhost:8080/",
+	"kbserverip":"http://137.108.119.44:8080/",
 	"queries": [
 		{
 		"name":"Which is the warmest room between the Podium and the Markbucks?",
